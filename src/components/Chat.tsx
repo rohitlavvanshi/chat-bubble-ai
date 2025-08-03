@@ -115,6 +115,11 @@ const ChatWindow = ({ onClose }: ChatWindowProps) => {
     const storedSessionId = localStorage.getItem("chatSessionId");
     if (storedSessionId) {
       setSessionId(storedSessionId);
+      // Restore chat history for existing session
+      const storedMessages = localStorage.getItem(`chatMessages_${storedSessionId}`);
+      if (storedMessages) {
+        setMessages(JSON.parse(storedMessages));
+      }
     } else {
       const newSessionId = generateSessionId();
       setSessionId(newSessionId);
@@ -123,10 +128,17 @@ const ChatWindow = ({ onClose }: ChatWindowProps) => {
   }, []);
 
   useEffect(() => {
-    if (sessionId) {
+    if (sessionId && messages.length === 0) {
       initializeChat();
     }
   }, [sessionId]);
+
+  // Save messages to localStorage whenever messages change
+  useEffect(() => {
+    if (sessionId && messages.length > 0) {
+      localStorage.setItem(`chatMessages_${sessionId}`, JSON.stringify(messages));
+    }
+  }, [messages, sessionId]);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
