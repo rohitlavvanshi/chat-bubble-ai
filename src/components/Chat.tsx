@@ -1,11 +1,97 @@
-
 import { useState, useEffect, useRef } from "react";
-import { Send, Minimize2 } from "lucide-react";
+import { MessageCircle, X, Send, Minimize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { sendMessage, endSession, generateSessionId } from "@/utils/chatApi";
 
+// Chat API functions
+const MESSAGE_WEBHOOK_URL = "https://alpharc.app.n8n.cloud/webhook/9b07fb75-bc10-4c31-ae17-2055bbcc5018";
+
+interface Session {
+  chat: Array<{ user?: string; bot?: string }>;
+  start_time: number;
+}
+
+const sessions: Record<string, Session> = {};
+
+const sendMessage = async (sessionId: string, message: string): Promise<string> => {
+  if (!sessions[sessionId]) {
+    sessions[sessionId] = {
+      chat: [],
+      start_time: Date.now()
+    };
+  }
+
+  const session = sessions[sessionId];
+
+  if (message === "__init__") {
+    try {
+      const response = await fetch(MESSAGE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          event: "new_session", 
+          session_id: sessionId 
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const botReply = await response.text();
+      session.chat.push({ bot: botReply });
+      return botReply;
+    } catch (error) {
+      const errorMessage = `Error loading welcome message: ${error}`;
+      session.chat.push({ bot: errorMessage });
+      return "Hello! How can I help you today?";
+    }
+  } else {
+    try {
+      const response = await fetch(MESSAGE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          message: message, 
+          session_id: sessionId 
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const botReply = await response.text();
+      
+      session.chat.push({ user: message });
+      session.chat.push({ bot: botReply });
+
+      if (message.toLowerCase().trim() === "__end__") {
+        delete sessions[sessionId];
+      }
+
+      return botReply;
+    } catch (error) {
+      const errorMessage = `Bot error: ${error}`;
+      session.chat.push({ user: message });
+      session.chat.push({ bot: errorMessage });
+      return "I'm sorry, I'm having trouble right now. Please try again later.";
+    }
+  }
+};
+
+const endSession = (sessionId: string): void => {
+  if (sessions[sessionId]) {
+    delete sessions[sessionId];
+  }
+};
+
+const generateSessionId = (): string => {
+  return `session-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+// Components
 interface Message {
   id: string;
   type: 'user' | 'bot' | 'typing';
@@ -17,7 +103,7 @@ interface ChatWindowProps {
   onClose: () => void;
 }
 
-export const ChatWindow = ({ onClose }: ChatWindowProps) => {
+const ChatWindow = ({ onClose }: ChatWindowProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +111,6 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Generate or get session ID
   useEffect(() => {
     const storedSessionId = localStorage.getItem("chatSessionId");
     if (storedSessionId) {
@@ -37,14 +122,12 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
     }
   }, []);
 
-  // Initialize chat when session ID is ready
   useEffect(() => {
     if (sessionId) {
       initializeChat();
     }
   }, [sessionId]);
 
-  // Auto-scroll to bottom
   useEffect(() => {
     if (scrollAreaRef.current) {
       const scrollElement = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
@@ -54,7 +137,6 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
     }
   }, [messages]);
 
-  // Focus input when chat opens
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -89,7 +171,6 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
     const messageToSend = message || inputValue.trim();
     if (!messageToSend || isLoading) return;
 
-    // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
       type: 'user',
@@ -101,7 +182,6 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
     setInputValue("");
     setIsLoading(true);
 
-    // Add typing indicator
     const typingMessage: Message = {
       id: `typing-${Date.now()}`,
       type: 'typing',
@@ -114,7 +194,6 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
     try {
       const botReply = await sendMessage(sessionId, messageToSend);
 
-      // Remove typing indicator and add bot response
       setMessages(prev => {
         const filteredMessages = prev.filter(msg => msg.type !== 'typing');
         return [...filteredMessages, {
@@ -128,7 +207,6 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
     } catch (error) {
       console.error('Error sending message:', error);
       
-      // Remove typing indicator and add error message
       setMessages(prev => {
         const filteredMessages = prev.filter(msg => msg.type !== 'typing');
         return [...filteredMessages, {
@@ -150,7 +228,6 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
     }
   };
 
-  // Cleanup session on unmount
   useEffect(() => {
     return () => {
       if (sessionId) {
@@ -161,7 +238,6 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
 
   return (
     <div className="bg-white rounded-2xl shadow-2xl w-80 h-96 flex flex-col overflow-hidden border border-gray-200">
-      {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
@@ -182,7 +258,6 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
         </Button>
       </div>
 
-      {/* Messages */}
       <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
         <div className="space-y-4">
           {messages.map((message) => (
@@ -216,7 +291,6 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
         </div>
       </ScrollArea>
 
-      {/* Input */}
       <div className="p-4 border-t border-gray-200">
         <div className="flex space-x-2">
           <Input
@@ -240,6 +314,40 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
           Press Enter to send
         </p>
       </div>
+    </div>
+  );
+};
+
+export const Chat = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleChat = () => {
+    setIsOpen(!isOpen);
+  };
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50">
+      {isOpen && (
+        <div className="mb-4 animate-in slide-in-from-bottom-5 duration-300">
+          <ChatWindow onClose={() => setIsOpen(false)} />
+        </div>
+      )}
+      
+      <button
+        onClick={toggleChat}
+        className={`w-14 h-14 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center text-white ${
+          isOpen 
+            ? 'bg-red-500 hover:bg-red-600 rotate-0' 
+            : 'bg-blue-600 hover:bg-blue-700 hover:scale-110'
+        }`}
+        aria-label={isOpen ? 'Close chat' : 'Open chat'}
+      >
+        {isOpen ? (
+          <X size={20} />
+        ) : (
+          <MessageCircle size={20} />
+        )}
+      </button>
     </div>
   );
 };

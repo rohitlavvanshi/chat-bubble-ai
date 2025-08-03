@@ -1,5 +1,5 @@
 
-import { ChatWidget } from "@/components/ChatWidget";
+import { Chat } from "@/components/Chat";
 
 const Index = () => {
   return (
@@ -136,7 +136,7 @@ const Index = () => {
       </footer>
 
       {/* Chat Widget */}
-      <ChatWidget />
+      <Chat />
     </div>
   );
 };
