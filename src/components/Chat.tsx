@@ -146,8 +146,19 @@ const ChatWindow = ({ onClose }: ChatWindowProps) => {
   const initializeChat = async () => {
     try {
       setIsLoading(true);
+      
+      // Show typing indicator for bot
+      const typingMessage: Message = {
+        id: `typing-init-${Date.now()}`,
+        type: 'typing',
+        content: 'Typing...',
+        timestamp: new Date()
+      };
+      setMessages([typingMessage]);
+
       const botReply = await sendMessage(sessionId, "__init__");
 
+      // Remove typing and add bot message
       setMessages([{
         id: Date.now().toString(),
         type: 'bot',
@@ -283,7 +294,11 @@ const ChatWindow = ({ onClose }: ChatWindowProps) => {
                     </div>
                   </div>
                 ) : (
-                  message.content
+                  <div 
+                    dangerouslySetInnerHTML={{ 
+                      __html: message.content 
+                    }} 
+                  />
                 )}
               </div>
             </div>
@@ -320,6 +335,22 @@ const ChatWindow = ({ onClose }: ChatWindowProps) => {
 
 export const Chat = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  // Initialize chat session when component mounts (website visit)
+  useEffect(() => {
+    const initializeOnVisit = async () => {
+      if (!hasInitialized) {
+        setHasInitialized(true);
+        // Auto-open chatbot after a short delay
+        setTimeout(() => {
+          setIsOpen(true);
+        }, 2000);
+      }
+    };
+
+    initializeOnVisit();
+  }, [hasInitialized]);
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
