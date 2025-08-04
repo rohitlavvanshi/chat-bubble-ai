@@ -260,15 +260,15 @@ const ChatWindow = ({ onClose }: ChatWindowProps) => {
   }, [sessionId]);
 
   return (
-    <div className="bg-white rounded-2xl shadow-2xl w-80 h-96 flex flex-col overflow-hidden border border-gray-200">
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-            <span className="text-sm">🤖</span>
+    <div className="bg-white rounded-2xl shadow-2xl w-80 h-96 flex flex-col overflow-hidden border-none">
+      <div className="bg-gradient-to-br from-pink-500 via-purple-500 to-violet-600 text-white p-5 flex items-center justify-between rounded-t-2xl">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-white/30 rounded-full flex items-center justify-center border-2 border-white/50">
+            <span className="text-base">🤖</span>
           </div>
           <div>
-            <h3 className="font-semibold text-sm">AI Assistant</h3>
-            <p className="text-xs text-blue-100">Online</p>
+            <h3 className="font-bold text-base shadow-sm">AI Assistant</h3>
+            <p className="text-xs text-white/90 font-medium">Online</p>
           </div>
         </div>
         <Button
@@ -291,18 +291,18 @@ const ChatWindow = ({ onClose }: ChatWindowProps) => {
               <div
                 className={`max-w-[80%] p-3 rounded-2xl text-sm ${
                   message.type === 'user'
-                    ? 'bg-blue-600 text-white rounded-br-md'
+                    ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-br-md shadow-lg'
                     : message.type === 'typing'
-                    ? 'bg-gray-100 text-gray-500 italic rounded-bl-md animate-pulse'
-                    : 'bg-gray-100 text-gray-800 rounded-bl-md'
+                    ? 'bg-slate-50 text-purple-600 italic rounded-bl-md animate-pulse border border-slate-200'
+                    : 'bg-slate-50 text-gray-800 rounded-bl-md border border-slate-200 shadow-sm'
                 }`}
               >
                 {message.type === 'typing' ? (
                   <div className="flex items-center space-x-1">
                     <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                     </div>
                   </div>
                 ) : (
@@ -327,12 +327,12 @@ const ChatWindow = ({ onClose }: ChatWindowProps) => {
             onKeyDown={handleKeyPress}
             placeholder="Type your message..."
             disabled={isLoading}
-            className="flex-1 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+            className="flex-1 border-slate-300 focus:border-purple-500 focus:ring-purple-500"
           />
           <Button
             onClick={() => handleSendMessage()}
             disabled={!inputValue.trim() || isLoading}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-3"
+            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-3 shadow-lg"
           >
             <Send size={16} />
           </Button>
@@ -381,7 +381,7 @@ export const Chat = () => {
         className={`w-14 h-14 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center text-white ${
           isOpen 
             ? 'bg-red-500 hover:bg-red-600 rotate-0' 
-            : 'bg-blue-600 hover:bg-blue-700 hover:scale-110'
+            : 'bg-gradient-to-br from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 hover:scale-110'
         }`}
         aria-label={isOpen ? 'Close chat' : 'Open chat'}
       >
