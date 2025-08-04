@@ -107,23 +107,25 @@ const styles = {
   },
   chatWindow: {
     backgroundColor: 'white',
-    borderRadius: '16px',
+    borderRadius: '20px',
     boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-    width: '320px',
-    height: '400px',
+    width: '350px',
+    height: '450px',
     display: 'flex',
     flexDirection: 'column' as const,
     overflow: 'hidden',
-    border: '1px solid #e5e7eb',
+    border: 'none',
     marginBottom: '16px'
   },
   header: {
-    background: 'linear-gradient(to right, #2563eb, #1d4ed8)',
+    background: 'linear-gradient(135deg, #d946ef, #a855f7, #8b5cf6)',
     color: 'white',
-    padding: '16px',
+    padding: '20px',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    borderTopLeftRadius: '20px',
+    borderTopRightRadius: '20px'
   },
   headerContent: {
     display: 'flex',
@@ -131,27 +133,30 @@ const styles = {
     gap: '8px'
   },
   avatar: {
-    width: '32px',
-    height: '32px',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    width: '40px',
+    height: '40px',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
     borderRadius: '50%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '14px'
+    fontSize: '16px',
+    border: '2px solid rgba(255, 255, 255, 0.5)'
   },
   headerText: {
     margin: 0
   },
   title: {
-    fontWeight: '600',
-    fontSize: '14px',
-    margin: 0
+    fontWeight: '700',
+    fontSize: '16px',
+    margin: 0,
+    textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
   },
   subtitle: {
-    fontSize: '12px',
-    opacity: 0.8,
-    margin: 0
+    fontSize: '13px',
+    opacity: 0.9,
+    margin: 0,
+    fontWeight: '500'
   },
   closeButton: {
     background: 'none',
@@ -191,32 +196,36 @@ const styles = {
     lineHeight: 1.4
   },
   userMessage: {
-    backgroundColor: '#2563eb',
+    background: 'linear-gradient(135deg, #d946ef, #a855f7)',
     color: 'white',
-    borderBottomRightRadius: '4px'
+    borderBottomRightRadius: '6px',
+    boxShadow: '0 2px 8px rgba(217, 70, 239, 0.3)'
   },
   botMessage: {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: '#f8fafc',
     color: '#374151',
-    borderBottomLeftRadius: '4px'
+    borderBottomLeftRadius: '6px',
+    border: '1px solid #e2e8f0',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
   },
   typingMessage: {
-    backgroundColor: '#f3f4f6',
-    color: '#6b7280',
+    backgroundColor: '#f8fafc',
+    color: '#a855f7',
     fontStyle: 'italic',
-    borderBottomLeftRadius: '4px',
+    borderBottomLeftRadius: '6px',
     display: 'flex',
     alignItems: 'center',
-    gap: '4px'
+    gap: '4px',
+    border: '1px solid #e2e8f0'
   },
   typingDots: {
     display: 'flex',
-    gap: '2px'
+    gap: '3px'
   },
   typingDot: {
-    width: '8px',
-    height: '8px',
-    backgroundColor: '#9ca3af',
+    width: '6px',
+    height: '6px',
+    backgroundColor: '#a855f7',
     borderRadius: '50%',
     animation: 'bounce 1.4s infinite ease-in-out'
   },
@@ -237,17 +246,18 @@ const styles = {
     outline: 'none'
   },
   sendButton: {
-    backgroundColor: '#2563eb',
+    background: 'linear-gradient(135deg, #d946ef, #a855f7)',
     color: 'white',
     border: 'none',
     borderRadius: '8px',
     padding: '8px 12px',
     cursor: 'pointer',
-    fontSize: '14px'
+    fontSize: '14px',
+    boxShadow: '0 2px 8px rgba(217, 70, 239, 0.3)'
   },
   helpText: {
     fontSize: '12px',
-    color: '#6b7280',
+    color: '#a855f7',
     textAlign: 'center' as const,
     marginTop: '8px'
   },
@@ -547,7 +557,7 @@ export const StandaloneChatbot: React.FC<ChatbotConfig> = (config) => {
         onClick={toggleChat}
         style={{
           ...styles.toggleButton,
-          backgroundColor: isOpen ? '#ef4444' : (config.primaryColor || '#2563eb'),
+          background: isOpen ? '#ef4444' : (config.primaryColor || 'linear-gradient(135deg, #d946ef, #a855f7)'),
           transform: !isOpen ? 'scale(1)' : 'scale(1)',
         }}
         onMouseOver={(e) => {
