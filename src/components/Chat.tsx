@@ -261,7 +261,7 @@ const ChatWindow = ({ onClose }: ChatWindowProps) => {
 
   return (
     <div className="bg-white rounded-2xl shadow-2xl w-80 h-96 flex flex-col overflow-hidden border-none">
-      <div className="bg-gradient-to-br from-pink-500 via-purple-500 to-violet-600 text-white p-5 flex items-center justify-between rounded-t-2xl">
+      <div className="bg-gradient-to-br from-pink-500 to-pink-600 text-white p-5 flex items-center justify-between rounded-t-2xl">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-white/30 rounded-full flex items-center justify-center border-2 border-white/50">
             <span className="text-base">🤖</span>
@@ -291,18 +291,18 @@ const ChatWindow = ({ onClose }: ChatWindowProps) => {
               <div
                 className={`max-w-[80%] p-3 rounded-2xl text-sm ${
                   message.type === 'user'
-                    ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-br-md shadow-lg'
+                    ? 'bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-br-md shadow-lg'
                     : message.type === 'typing'
-                    ? 'bg-slate-50 text-purple-600 italic rounded-bl-md animate-pulse border border-slate-200'
+                    ? 'bg-slate-50 text-pink-600 italic rounded-bl-md animate-pulse border border-slate-200'
                     : 'bg-slate-50 text-gray-800 rounded-bl-md border border-slate-200 shadow-sm'
                 }`}
               >
                 {message.type === 'typing' ? (
                   <div className="flex items-center space-x-1">
                     <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                     </div>
                   </div>
                 ) : (
@@ -327,12 +327,12 @@ const ChatWindow = ({ onClose }: ChatWindowProps) => {
             onKeyDown={handleKeyPress}
             placeholder="Type your message..."
             disabled={isLoading}
-            className="flex-1 border-slate-300 focus:border-purple-500 focus:ring-purple-500"
+            className="flex-1 border-slate-300 focus:border-pink-500 focus:ring-pink-500"
           />
           <Button
             onClick={() => handleSendMessage()}
             disabled={!inputValue.trim() || isLoading}
-            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-3 shadow-lg"
+            className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-3 shadow-lg"
           >
             <Send size={16} />
           </Button>
@@ -381,7 +381,7 @@ export const Chat = () => {
         className={`w-14 h-14 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center text-white ${
           isOpen 
             ? 'bg-red-500 hover:bg-red-600 rotate-0' 
-            : 'bg-gradient-to-br from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 hover:scale-110'
+            : 'bg-gradient-to-br from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 hover:scale-110'
         }`}
         aria-label={isOpen ? 'Close chat' : 'Open chat'}
       >
