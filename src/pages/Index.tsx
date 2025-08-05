@@ -7,7 +7,7 @@ const Index = () => {
       <h1 className="text-4xl font-bold text-gray-900">Welcome to my page</h1>
       
       <StandaloneChatbot 
-        webhookUrl="https://your-webhook-url.com"
+        webhookUrl="https://httpbin.org/post"
         title="Customer Support"
         primaryColor="#ec4899"
         position="bottom-right"

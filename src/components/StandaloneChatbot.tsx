@@ -55,9 +55,10 @@ const sendMessage = async (sessionId: string, message: string, webhookUrl: strin
       session.chat.push({ bot: botReply });
       return botReply;
     } catch (error) {
-      const errorMessage = `Error loading welcome message: ${error}`;
+      console.error('Webhook error:', error);
+      const errorMessage = "Hello! I'm having trouble connecting to my backend right now, but I'm here to help!";
       session.chat.push({ bot: errorMessage });
-      return "Hello! How can I help you today?";
+      return errorMessage;
     }
   } else {
     try {
@@ -85,10 +86,11 @@ const sendMessage = async (sessionId: string, message: string, webhookUrl: strin
 
       return botReply;
     } catch (error) {
-      const errorMessage = `Bot error: ${error}`;
+      console.error('Webhook error:', error);
+      const errorMessage = "I'm sorry, I'm having trouble connecting right now. Please check that your webhook URL is correct and try again.";
       session.chat.push({ user: message });
       session.chat.push({ bot: errorMessage });
-      return "I'm sorry, I'm having trouble right now. Please try again later.";
+      return errorMessage;
     }
   }
 };
